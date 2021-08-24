@@ -1,0 +1,122 @@
+﻿@using LinksoftStudy.Web.Interfaces
+
+@model IEnumerable<IPerson>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div>
+    <h2>Import data.</h2>
+    <div>
+        <label for="file">
+            <b>New attachment</b>
+        </label>
+        <input name="file" id="attachmentsInput" type="file" accept=".txt" onchange="checkfiles()">
+    </div>
+    <div class="row" id="filesOverview">
+    </div>
+    <div>
+        <input type="button" name="uploadNewFiles" value="Upload files" hidden onclick="uploadFiles()" />
+    </div>
+</div>
+
+<hr />
+
+@if (Model != null)
+{
+    <h2>People</h2>
+    @if (Model.Any())
+    {
+        <table>
+            <thead>
+                <tr><th>Person Number (Total: @Model.Count())</th></tr>
+            </thead>
+            @foreach (var person in Model)
+            {
+                <tr><td>@person.PersonId</td></tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>No data.</p>
+    }
+}
+
+<script defer>
+    var deleteMode = false;
+    var fileList = [];
+    var uploadButton = document.getElementsByName("uploadNewFiles")[0];
+    var fileInput = document.getElementById("attachmentsInput");
+
+    const checkfiles = () => {
+        const fileContainer = document.getElementById("filesOverview");
+        fileContainer.innerHTML = "";
+
+        if (fileInput.files.length > 0) {
+            uploadButton.removeAttribute("hidden");
+            for (var i = 0; i < fileInput.files.length; i++) {
+                fileContainer.innerHTML += (`<div class="col-12 mb-2" id="file_${i}">${fileInput.files[i].name}</div>`);
+            }
+        } else {
+            uploadButton.setAttribute("hidden", true);
+            fileContainer.innerHTML = "";
+        }
+
+        getFiles();
+    }
+
+    const getFiles = () => {
+        fileList = [];
+        uploadButton.classList.add("disabled");
+        uploadButton.value = "Loading...";
+
+        for (var i = 0; i < fileInput.files.length; i++) {
+            const file = fileInput.files[i];
+            const fileElement = document.getElementById(`file_${i}`);
+
+            const reader = new FileReader();
+            reader.fileName = file.name;
+            reader.onload = ((fileElement, lastFile) => {
+                return async () => {
+                    fileElement.innerHTML += " - ready to upload";
+                    fileList.push({ "name": reader.fileName, "data": reader.result });
+
+                    if (lastFile) {
+                        uploadButton.classList.remove("disabled");
+                        uploadButton.value = "Upload";
+                    }
+                }
+            })(fileElement, (i === (fileInput.files.length - 1)));
+
+            reader.readAsText(file);
+        }
+    }
+
+    const uploadFiles = () => {
+        debugger;
+        const payload = {};
+        payload.attachments = fileList;
+
+        uploadButton.classList.add("disabled");
+        uploadButton.value = "Uploading...";
+
+        fetch(`/Home/UploadFiles`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+    };
+</script>
