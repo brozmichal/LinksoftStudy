@@ -88,27 +88,23 @@ namespace LinksoftStudy.Data.Repositories
             }
         }
 
-        private Task<PersonEntity> UpdatePerson(PersonEntity personEntity, PersonModel person)
+        private async Task<PersonEntity> UpdatePerson(PersonEntity personEntity, PersonModel person)
         {
             personEntity.PersonId = person.PersonId;
             personEntity.DateUpdated = DateTime.UtcNow;
-            this.TryAssignContact(personEntity, person.ContactId);
+            //this.TryAssignContact(personEntity, person.ContactId);
 
-            var result = UpdateAsync(personEntity);
-
-            return result;
+            return await UpdateAsync(personEntity);
         }
 
-        private Task<PersonEntity> CreatePerson(PersonModel person)
+        private async Task<PersonEntity> CreatePerson(PersonModel person)
         {
             var personToAdd = new PersonEntity();
             personToAdd.PersonId = person.PersonId;
             personToAdd.DateCreated = DateTime.UtcNow;
-            this.TryAssignContact(personToAdd, person.ContactId);
+            //this.TryAssignContact(personToAdd, person.ContactId);
 
-            var result = AddAsync(personToAdd);
-
-            return result;
+            return await AddAsync(personToAdd);
         }
 
 
