@@ -1,9 +1,8 @@
 ﻿using LinksoftStudy.Common.Interfaces;
-using LinksoftStudy.Web.Models;
+using LinksoftStudy.Common.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LinksoftStudy.Common.Services
 {
@@ -14,46 +13,46 @@ namespace LinksoftStudy.Common.Services
 
         }
 
-        public IEnumerable<ContactModel> ProcessContent(string content)
+        public IEnumerable<IContactModel> ProcessContent(string content)
         {
             var pairs = content.Split("\n");
-            List<ContactModel> inputDataModels = new List<ContactModel>();
+            var inputDataModels = new List<ContactModel>();
             foreach (var pair in pairs)
             {
-                var inputItem = ProcessPair(pair);
+                var inputItem = this.ProcessPair(pair);
                 if (inputItem == null)
                 {
                     continue;
                 }
 
-                inputDataModels.Add(inputItem);
+                inputDataModels.Add((ContactModel)inputItem);
             }
 
             return inputDataModels;
         }
 
-        public IEnumerable<ContactModel> ProcessInputFile(string path)
+        public IEnumerable<IContactModel> ProcessInputFile(string path)
         {
             var reader = new StreamReader(path);
 
             string line;
-            List<ContactModel> inputDataModels = new List<ContactModel>();
+            var inputDataModels = new List<ContactModel>();
 
             while ((line = reader.ReadLine()) != null)
             {
-                var inputItem = ProcessPair(line);
+                var inputItem = this.ProcessPair(line);
                 if (inputItem == null)
                 {
                     continue;
                 }
 
-                inputDataModels.Add(inputItem);
+                inputDataModels.Add((ContactModel)inputItem);
             }
 
             return inputDataModels;
         }
 
-        private ContactModel ProcessPair(string pairString)
+        private IContactModel ProcessPair(string pairString)
         {
             var splitString = pairString.Split(' ');
             var filteredLine = splitString.Where(item => !string.IsNullOrWhiteSpace(item)).ToList();

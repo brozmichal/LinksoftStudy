@@ -19,6 +19,8 @@ namespace LinksoftStudy.Data
 
         public DbSet<PersonEntity> Persons { get; set; }
 
+        public DbSet<ContactContacteeEntity> Contacts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             this.SetPersonToPersonContacts(modelBuilder);
@@ -28,13 +30,12 @@ namespace LinksoftStudy.Data
         {
             modelBuilder.Entity<ContactContacteeEntity>()
                 .HasOne(e => e.Contact)
-                .WithMany(b => b.Contactee)
-                .HasForeignKey(e => e.ContactId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(b => b.Contactees)
+                .HasForeignKey(e => e.ContactId);
 
             modelBuilder.Entity<ContactContacteeEntity>()
                 .HasOne(e => e.Contactee)
-                .WithMany(b => b.Contact)
+                .WithMany(b => b.Contacts)
                 .HasForeignKey(e => e.ContacteeId);
         }
     }

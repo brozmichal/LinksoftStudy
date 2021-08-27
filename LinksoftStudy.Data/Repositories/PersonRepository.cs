@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace LinksoftStudy.Data.Repositories
 {
@@ -18,20 +19,24 @@ namespace LinksoftStudy.Data.Repositories
             try
             {
                 var personEntity = context.Persons
+                    .Include(table => table.Contacts)
                     .Where(entity => entity.PersonId.Equals(person.PersonId))
                     .FirstOrDefault();
 
-                Task<PersonEntity> result = default;
-                if (personEntity != null)
+                if (personEntity == null)
                 {
-                    result = this.UpdatePerson(personEntity, person);
+                    this.CreatePerson(person);
+                }
+                else
+                {
+                    this.UpdatePerson(personEntity, person);
                 }
 
-                result = this.CreatePerson(person);
+                var result = await context.SaveChangesAsync();
 
                 return new PersonModel()
                 {
-                    PersonId = result.Result.PersonId
+                    PersonId = personEntity.PersonId
                 };
             }
             catch (Exception ex)
@@ -53,7 +58,7 @@ namespace LinksoftStudy.Data.Repositories
                 var result = people.Select(person => new PersonModel()
                 {
                     PersonId = person.PersonId
-                }).AsEnumerable();
+                });
 
                 return result;
             }
@@ -68,9 +73,9 @@ namespace LinksoftStudy.Data.Repositories
             try
             {
                 var person = context.Persons
+                    .Include(table => table.Contacts)
                     .Where(person => person.PersonId.Equals(personId))
                     .FirstOrDefault();
-
 
                 if (person == null)
                 {
@@ -88,41 +93,57 @@ namespace LinksoftStudy.Data.Repositories
             }
         }
 
-        private async Task<PersonEntity> UpdatePerson(PersonEntity personEntity, PersonModel person)
+        private void UpdatePerson(PersonEntity personEntity, PersonModel person)
         {
             personEntity.PersonId = person.PersonId;
             personEntity.DateUpdated = DateTime.UtcNow;
-            //this.TryAssignContact(personEntity, person.ContactId);
-
-            return await UpdateAsync(personEntity);
+            this.TryAssignContact(personEntity, person.ContactId);
         }
 
-        private async Task<PersonEntity> CreatePerson(PersonModel person)
+        private void CreatePerson(PersonModel person)
         {
             var personToAdd = new PersonEntity();
             personToAdd.PersonId = person.PersonId;
             personToAdd.DateCreated = DateTime.UtcNow;
-            //this.TryAssignContact(personToAdd, person.ContactId);
-
-            return await AddAsync(personToAdd);
+            this.TryAssignContact(personToAdd, person.ContactId);
         }
 
 
-        private void TryAssignContact(PersonEntity person, string contacteeId)
+        private void TryAssignContact(PersonEntity person, string contactId)
         {
             var contact = context.Persons
-                    .Where(entity => entity.PersonId.Equals(person.PersonId))
+                    .Where(entity => entity.PersonId.Equals(contactId))
                     .FirstOrDefault();
 
-            if (contact != null)
+            // contact person does not exist
+            if (contact == null)
             {
-                person.Contact.Add(new ContactContacteeEntity()
+                return;
+            }
+
+            try
+            {
+                var connectionExists = person.Contacts
+                    .Any(con => con.ContacteeId == contact.Id);
+
+                if (connectionExists)
                 {
-                    ContactId = person.Id,
-                    Contact = person,
-                    ContacteeId = contact.Id,
-                    Contactee = contact
-                });
+                    return;
+                }
+
+                var contactToAdd = new ContactContacteeEntity()
+                {
+                    ContactId = contact.Id,
+                    ContacteeId = person.Id,
+                    DateCreated = DateTime.UtcNow
+                };
+
+                context.Contacts.Add(contactToAdd);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Exception occured in {nameof(TryAssignContact)}. Ex: {ex.Message}");
             }
         }
     }

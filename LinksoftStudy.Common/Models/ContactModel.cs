@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LinksoftStudy.Common.Interfaces;
 
-namespace LinksoftStudy.Web.Models
+namespace LinksoftStudy.Common.Models
 {
-    public class ContactModel
+    public class ContactModel : IContactModel
     {
         public string ContactPrimary { get; set; }
 

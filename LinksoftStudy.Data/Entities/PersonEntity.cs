@@ -11,7 +11,7 @@ namespace LinksoftStudy.Data.Models
         [Required]
         public string PersonId { get; set; }
 
-        public virtual ICollection<ContactContacteeEntity> Contactee { get; set; }
-        public virtual ICollection<ContactContacteeEntity> Contact { get; set; }
+        public virtual ICollection<ContactContacteeEntity> Contactees { get; set; }
+        public virtual ICollection<ContactContacteeEntity> Contacts { get; set; }
     }
 }

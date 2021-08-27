@@ -1,13 +1,11 @@
-﻿using LinksoftStudy.Web.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace LinksoftStudy.Common.Interfaces
 {
     public interface IInputDataService
     {
-        IEnumerable<ContactModel> ProcessInputFile(string path);
+        IEnumerable<IContactModel> ProcessInputFile(string path);
         
-        IEnumerable<ContactModel> ProcessContent(string content);
+        IEnumerable<IContactModel> ProcessContent(string content);
     }
 }
