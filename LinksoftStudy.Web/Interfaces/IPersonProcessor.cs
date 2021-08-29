@@ -6,5 +6,7 @@ namespace LinksoftStudy.Web.Interfaces
     public interface IPersonProcessor
     {
         Task<IEnumerable<IPerson>> GetPeople();
+
+        Task<IUserStatistics> GetUsersStatistics();
     }
 }

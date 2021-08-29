@@ -1,6 +1,8 @@
 ﻿using LinksoftStudy.Services.Interfaces;
 using LinksoftStudy.Services.Models;
 using LinksoftStudy.Web.Interfaces;
+using LinksoftStudy.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,6 +33,23 @@ namespace LinksoftStudy.Web.Processors
                 {
                     PersonId = person.PersonId
                 }).AsEnumerable();
+        }
+
+         public async Task<IUserStatistics> GetUsersStatistics()
+        {
+            var resp = await this.personService.GetStatistics();
+            if (resp == null)
+            {
+                return null;
+            }
+
+            var result = new UserStatistics()
+            {
+                AverageFriendshipsPerUser = (int)resp.UserStatistics.Average(us => us.TotalFriends),
+                TotalUsers = resp.TotalUsers
+            };
+
+            return result; 
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@using LinksoftStudy.Web.Interfaces
 
-@model IEnumerable<IPerson>
+@model UserStatistics
 
 @{
     ViewData["Title"] = "Home Page";
@@ -31,21 +31,18 @@
 @if (Model != null)
 {
     <h2>People</h2>
-    @if (Model.Any())
+    @if (Model.TotalUsers > 0)
     {
-        <table>
-            <thead>
-                <tr><th>Person Number (Total: @Model.Count())</th></tr>
-            </thead>
-            @foreach (var person in Model)
-            {
-                <tr><td>@person.PersonId</td></tr>
-            }
-        </table>
+        <p>
+            Total users: @Model.TotalUsers
+        </p>
+        <p>
+            Average per user: @Model.AverageFriendshipsPerUser}
+        </p>
     }
     else
     {
-        <p>No data.</p>
+        <p>No results.</p>
     }
 }
 

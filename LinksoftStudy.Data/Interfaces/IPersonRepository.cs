@@ -12,5 +12,7 @@ namespace LinksoftStudy.Data.Interfaces
         Task<PersonModel> GetPerson(string personId);
 
         Task<PersonModel> CreateOrUpdatePerson(PersonModel person);
+
+        Task<PersonStatisticsModel> GetUsersStatistics();
     }
 }

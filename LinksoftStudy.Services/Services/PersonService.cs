@@ -78,7 +78,7 @@ namespace LinksoftStudy.Services.Services
                 {
                     // log failed 
                 }
-                
+
                 createdPeople.Add(resp);
             }
 
@@ -99,6 +99,29 @@ namespace LinksoftStudy.Services.Services
             {
                 People = this.mapper.Map<IEnumerable<PersonModel>, IEnumerable<Person>>(createdPeople)
             };
+        }
+
+        public async Task<IPersonGetStatisticsResp> GetStatistics()
+        {
+            var resp = await this.personRepository.GetUsersStatistics();
+            if (resp == null)
+            {
+                return null;
+            }
+
+            var result = new PersonGetStatisticsResp()
+            {
+                UserStatistics = resp.Users.Select(user => new UserStatistic()
+                {
+                    Person = new Person() {
+                       PersonId = user.User.PersonId
+                    },
+                    TotalFriends = user.TotalFriendships
+                }),
+                TotalUsers = resp.TotalUsers
+            };
+
+            return result;
         }
 
         public async Task<IPersonGetResp> GetPerson(IPersonGetReq req)

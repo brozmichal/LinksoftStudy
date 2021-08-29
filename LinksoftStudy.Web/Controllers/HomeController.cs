@@ -37,13 +37,19 @@ namespace LinksoftStudy.Web.Controllers
             //var filePath = @"c:\Temp\network-data.txt";
             //this.inputDataProcessor.Process(filePath);
 
-            var resp = await this.personProcessor.GetPeople();
+            var resp = this.personProcessor.GetUsersStatistics();
             if (resp == null)
             {
-                return View();
+                // log error - return error view
             }
 
-            return View(resp.ToList());
+            var result = new UserStatistics()
+            {
+                TotalUsers = resp?.Result?.TotalUsers ?? 0,
+                AverageFriendshipsPerUser = resp?.Result?.AverageFriendshipsPerUser ?? 0
+            };
+
+            return View(resp.Result);
         }
 
         [HttpPost]

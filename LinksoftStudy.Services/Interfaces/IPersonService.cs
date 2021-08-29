@@ -13,5 +13,7 @@ namespace LinksoftStudy.Services.Interfaces
         Task<IPersonCreateBulkResp> CreateBulk(IPersonCreateBulkReq req);
 
         Task<IPersonGetMultipleResp> GetPeople(IPersonGetMultipleReq req);
+
+        Task<IPersonGetStatisticsResp> GetStatistics();
     }
 }

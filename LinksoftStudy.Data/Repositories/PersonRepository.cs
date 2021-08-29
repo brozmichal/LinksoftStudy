@@ -1,10 +1,10 @@
 ﻿using LinksoftStudy.Data.Interfaces;
 using LinksoftStudy.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace LinksoftStudy.Data.Repositories
 {
@@ -94,6 +94,34 @@ namespace LinksoftStudy.Data.Repositories
             {
                 throw new Exception($"Couldn't retrieve entity: {ex.Message}");
             }
+        }
+
+        public async Task<PersonStatisticsModel> GetUsersStatistics()
+        {
+            var users = GetAll();
+
+            var result = new PersonStatisticsModel();
+            if (users == null)
+            {
+                result.Users = Enumerable.Empty<PersonStatisticModel>();
+                result.TotalUsers = 0;
+                return result;
+            }
+
+            result.Users = users
+                .GroupBy(u => u.PersonId)
+                .Select(us => new PersonStatisticModel()
+                {
+                    User = new PersonModel()
+                    {
+                        PersonId = us.Key
+                    },
+                    TotalFriendships = us.Select(c => c.Contacts).Count()
+                });
+
+            result.TotalUsers = users.Count();
+
+            return result;
         }
 
         private void UpdatePerson(PersonEntity personEntity, PersonModel person)
