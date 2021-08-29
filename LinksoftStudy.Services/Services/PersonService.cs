@@ -68,7 +68,7 @@ namespace LinksoftStudy.Services.Services
                 return null;
             }
 
-            var createdPeople = new List<Person>();
+            var createdPeople = new List<PersonModel>();
             foreach (var person in req.People)
             {
                 var personModel = this.mapper.Map<PersonModel>(person);
@@ -78,13 +78,26 @@ namespace LinksoftStudy.Services.Services
                 {
                     // log failed 
                 }
-
-                createdPeople.Add(this.mapper.Map<Person>(resp));
+                
+                createdPeople.Add(resp);
             }
+
+            // second run for builk person creation to assign person connections
+            foreach (var person in createdPeople.Where(person => person.RequiresSecondRun))
+            {
+                var personModel = this.mapper.Map<PersonModel>(person);
+                var resp = await this.personRepository.CreateOrUpdatePerson(personModel);
+
+                if (resp == null)
+                {
+                    // log failed 
+                }
+            }
+
 
             return new PersonCreateBulkResp()
             {
-                People = createdPeople
+                People = this.mapper.Map<IEnumerable<PersonModel>, IEnumerable<Person>>(createdPeople)
             };
         }
 

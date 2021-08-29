@@ -19,24 +19,27 @@ namespace LinksoftStudy.Data.Repositories
             try
             {
                 var personEntity = context.Persons
-                    .Include(table => table.Contacts)
                     .Where(entity => entity.PersonId.Equals(person.PersonId))
+                    .Include(x => x.Contacts)
                     .FirstOrDefault();
 
                 if (personEntity == null)
                 {
-                    this.CreatePerson(person);
+                    personEntity = new PersonEntity();
+                    this.CreatePerson(personEntity, person);
                 }
                 else
                 {
                     this.UpdatePerson(personEntity, person);
                 }
 
-                var result = await context.SaveChangesAsync();
+                await context.SaveChangesAsync();
 
                 return new PersonModel()
                 {
-                    PersonId = personEntity.PersonId
+                    PersonId = personEntity.PersonId,
+                    ContactId = person.ContactId,
+                    RequiresSecondRun = person.RequiresSecondRun
                 };
             }
             catch (Exception ex)
@@ -97,48 +100,49 @@ namespace LinksoftStudy.Data.Repositories
         {
             personEntity.PersonId = person.PersonId;
             personEntity.DateUpdated = DateTime.UtcNow;
-            this.TryAssignContact(personEntity, person.ContactId);
+            this.TryAssignContact(personEntity, person);
+            context.Persons.Update(personEntity);
         }
 
-        private void CreatePerson(PersonModel person)
+        private void CreatePerson(PersonEntity personEntity, PersonModel person)
         {
-            var personToAdd = new PersonEntity();
-            personToAdd.PersonId = person.PersonId;
-            personToAdd.DateCreated = DateTime.UtcNow;
-            this.TryAssignContact(personToAdd, person.ContactId);
+            personEntity.PersonId = person.PersonId;
+            personEntity.DateCreated = DateTime.UtcNow;
+            this.TryAssignContact(personEntity, person);
+            context.Persons.Add(personEntity);
         }
 
 
-        private void TryAssignContact(PersonEntity person, string contactId)
+        private void TryAssignContact(PersonEntity personEntity, PersonModel person)
         {
             var contact = context.Persons
-                    .Where(entity => entity.PersonId.Equals(contactId))
+                    .Where(entity => entity.PersonId == person.ContactId)
                     .FirstOrDefault();
 
             // contact person does not exist
             if (contact == null)
             {
+                person.RequiresSecondRun = true;
                 return;
             }
 
             try
             {
-                var connectionExists = person.Contacts
-                    .Any(con => con.ContacteeId == contact.Id);
-
+                var connectionExists = personEntity.Contacts
+                    .Any(c => c.Contact.Id == contact.Id);
                 if (connectionExists)
                 {
                     return;
                 }
 
-                var contactToAdd = new ContactContacteeEntity()
+                personEntity.Contacts.Add(new ContactContacteeEntity
                 {
+                    Contactee = personEntity,
+                    ContacteeId = personEntity.Id,
+                    Contact = contact,
                     ContactId = contact.Id,
-                    ContacteeId = person.Id,
                     DateCreated = DateTime.UtcNow
-                };
-
-                context.Contacts.Add(contactToAdd);
+                });
             }
             catch (Exception ex)
             {

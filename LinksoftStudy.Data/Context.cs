@@ -31,7 +31,8 @@ namespace LinksoftStudy.Data
             modelBuilder.Entity<ContactContacteeEntity>()
                 .HasOne(e => e.Contact)
                 .WithMany(b => b.Contactees)
-                .HasForeignKey(e => e.ContactId);
+                .HasForeignKey(e => e.ContactId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ContactContacteeEntity>()
                 .HasOne(e => e.Contactee)

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinksoftStudy.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20210826122544_20210826_ContactContactee-2")]
-    partial class _20210826_ContactContactee2
+    [Migration("20210829084613_20210829_Initial")]
+    partial class _20210829_Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,7 +37,7 @@ namespace LinksoftStudy.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateUpdated")
+                    b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -59,7 +59,7 @@ namespace LinksoftStudy.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateUpdated")
+                    b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PersonId")
@@ -74,15 +74,15 @@ namespace LinksoftStudy.Data.Migrations
             modelBuilder.Entity("LinksoftStudy.Data.Models.ContactContacteeEntity", b =>
                 {
                     b.HasOne("LinksoftStudy.Data.Models.PersonEntity", "Contact")
-                        .WithMany("Contactee")
+                        .WithMany("Contactees")
                         .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("LinksoftStudy.Data.Models.PersonEntity", "Contactee")
-                        .WithMany("Contact")
+                        .WithMany("Contacts")
                         .HasForeignKey("ContacteeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Contact");
@@ -92,9 +92,9 @@ namespace LinksoftStudy.Data.Migrations
 
             modelBuilder.Entity("LinksoftStudy.Data.Models.PersonEntity", b =>
                 {
-                    b.Navigation("Contact");
+                    b.Navigation("Contactees");
 
-                    b.Navigation("Contactee");
+                    b.Navigation("Contacts");
                 });
 #pragma warning restore 612, 618
         }

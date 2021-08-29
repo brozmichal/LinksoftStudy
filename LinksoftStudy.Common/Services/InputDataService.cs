@@ -54,7 +54,7 @@ namespace LinksoftStudy.Common.Services
 
         private IContactModel ProcessPair(string pairString)
         {
-            var splitString = pairString.Split(' ');
+            var splitString = pairString.Split(null);
             var filteredLine = splitString.Where(item => !string.IsNullOrWhiteSpace(item)).ToList();
             if (filteredLine.Count != 2)
             {

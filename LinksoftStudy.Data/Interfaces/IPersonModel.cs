@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace LinksoftStudy.Data.Models
 {
-    public class PersonModel
+    public interface IPersonModel
     {
-        public string PersonId { get; set; }
+        string PersonId { get; set; }
 
-        public string ContactId { get; set; }
-
-        public bool RequiresSecondRun { get; set; } = false;
+        string ContactId { get; set; }
     }
 }

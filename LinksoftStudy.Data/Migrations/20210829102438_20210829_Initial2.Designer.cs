@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinksoftStudy.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20210826114438_20210826_ContactContactee")]
-    partial class _20210826_ContactContactee
+    [Migration("20210829102438_20210829_Initial2")]
+    partial class _20210829_Initial2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,19 +37,14 @@ namespace LinksoftStudy.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateUpdated")
+                    b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("PersonEntityId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContactId");
 
                     b.HasIndex("ContacteeId");
-
-                    b.HasIndex("PersonEntityId");
 
                     b.ToTable("ContactContactee");
                 });
@@ -64,7 +59,7 @@ namespace LinksoftStudy.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateUpdated")
+                    b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PersonId")
@@ -79,20 +74,16 @@ namespace LinksoftStudy.Data.Migrations
             modelBuilder.Entity("LinksoftStudy.Data.Models.ContactContacteeEntity", b =>
                 {
                     b.HasOne("LinksoftStudy.Data.Models.PersonEntity", "Contact")
-                        .WithMany()
+                        .WithMany("Contactees")
                         .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("LinksoftStudy.Data.Models.PersonEntity", "Contactee")
-                        .WithMany("Contact")
+                        .WithMany("Contacts")
                         .HasForeignKey("ContacteeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("LinksoftStudy.Data.Models.PersonEntity", null)
-                        .WithMany("Contactee")
-                        .HasForeignKey("PersonEntityId");
 
                     b.Navigation("Contact");
 
@@ -101,9 +92,9 @@ namespace LinksoftStudy.Data.Migrations
 
             modelBuilder.Entity("LinksoftStudy.Data.Models.PersonEntity", b =>
                 {
-                    b.Navigation("Contact");
+                    b.Navigation("Contactees");
 
-                    b.Navigation("Contactee");
+                    b.Navigation("Contacts");
                 });
 #pragma warning restore 612, 618
         }

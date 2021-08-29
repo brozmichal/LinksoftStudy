@@ -8,6 +8,12 @@ namespace LinksoftStudy.Data.Models
     [Table("People")]
     public class PersonEntity : BaseEntity
     {
+        public PersonEntity()
+        {
+            Contacts = new List<ContactContacteeEntity>();
+            Contactees = new List<ContactContacteeEntity>();
+        }
+
         [Required]
         public string PersonId { get; set; }
 
