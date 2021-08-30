@@ -20,12 +20,12 @@ namespace LinksoftStudy.Web.Controllers
 
         private readonly IInputDataProcessor inputDataProcessor;
 
-        private readonly IPersonProcessor personProcessor;
+        private readonly IUserProcessor personProcessor;
 
         public HomeController(
             ILogger<HomeController> logger,
             IInputDataProcessor inputDataProcessor,
-            IPersonProcessor personProcessor)
+            IUserProcessor personProcessor)
         {
             this.logger = logger;
             this.inputDataProcessor = inputDataProcessor;

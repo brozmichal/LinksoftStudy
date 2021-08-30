@@ -32,14 +32,14 @@ namespace LinksoftStudy.Web.IoC
             builder.RegisterType<InputDataService>().As<IInputDataService>();
 
             // services
-            builder.RegisterType<PersonService>().As<IPersonService>();
+            builder.RegisterType<UserService>().As<IUserService>();
 
             // processors
             builder.RegisterType<InputDataProcessor>().As<IInputDataProcessor>();
-            builder.RegisterType<PersonProcessor>().As<IPersonProcessor>();
+            builder.RegisterType<UserProcessor>().As<IUserProcessor>();
 
             // repositories
-            builder.RegisterType<PersonRepository>().As<IPersonRepository>().InstancePerLifetimeScope();
+            builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerLifetimeScope();
 
             // Database
             builder.Register(x =>

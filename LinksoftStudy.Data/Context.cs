@@ -17,16 +17,16 @@ namespace LinksoftStudy.Data
         {
         }
 
-        public DbSet<PersonEntity> Persons { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
 
         public DbSet<ContactContacteeEntity> Contacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            this.SetPersonToPersonContacts(modelBuilder);
+            this.SetContactContactees(modelBuilder);
         }
 
-        private void SetPersonToPersonContacts(ModelBuilder modelBuilder)
+        private void SetContactContactees(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ContactContacteeEntity>()
                 .HasOne(e => e.Contact)

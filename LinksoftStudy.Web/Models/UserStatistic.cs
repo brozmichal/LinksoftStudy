@@ -4,7 +4,7 @@ namespace LinksoftStudy.Web.Models
 {
     public class UserStatistic : IUserStatistic
     {
-        public IPerson Person { get; set; }
+        public IUser Person { get; set; }
 
         public int TotalFriendShips { get; set; }
     }

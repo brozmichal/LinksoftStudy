@@ -12,14 +12,14 @@ namespace LinksoftStudy.Web.Processors
 {
     public class InputDataProcessor : IInputDataProcessor
     {
-        private readonly IPersonService personService;
+        private readonly IUserService personService;
 
         private readonly IInputDataService inputDataService;
 
         private readonly IMapper mapper;
 
         public InputDataProcessor(
-                IPersonService personService,
+                IUserService personService,
                 IInputDataService inputDataService,
                 IMapper mapper)
         {
@@ -55,9 +55,9 @@ namespace LinksoftStudy.Web.Processors
             //};
 
             //second run to map contacts
-            var req = new PersonCreateBulkReq()
+            var req = new UserCreateBulkReq()
             {
-                People = this.mapper.Map<IEnumerable<ContactModel>, IEnumerable<Person>>(contacts.Select(contact => (ContactModel)contact))
+                Users = this.mapper.Map<IEnumerable<ContactModel>, IEnumerable<User>>(contacts.Select(contact => (ContactModel)contact))
             };
 
             var resp = await this.personService.CreateBulk(req);

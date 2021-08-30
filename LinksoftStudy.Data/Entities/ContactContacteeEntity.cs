@@ -9,7 +9,7 @@ namespace LinksoftStudy.Data.Models
         public int ContactId { get; set; }
         public int ContacteeId { get; set; }
 
-        public PersonEntity Contact { get; set; }
-        public PersonEntity Contactee { get; set; }
+        public UserEntity Contact { get; set; }
+        public UserEntity Contactee { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 {
     public interface IUserStatistic
     {
-        IPerson Person { get; set; }
+        IUser Person { get; set; }
 
         int TotalFriendShips { get; set; }
     }

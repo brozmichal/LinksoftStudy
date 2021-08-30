@@ -4,7 +4,7 @@ namespace LinksoftStudy.Services.Interfaces
 {
     public interface IUserStatistic
     {
-        IPerson Person { get; set; }
+        IUser User { get; set; }
 
         public int TotalFriends { get; set; }
     }

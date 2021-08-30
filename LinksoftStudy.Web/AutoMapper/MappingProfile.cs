@@ -7,16 +7,16 @@ namespace LinksoftStudy.Web.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<Data.Models.PersonEntity, Data.Models.PersonModel>().ReverseMap();
-            CreateMap<Data.Models.PersonModel, Services.Models.Person>().ReverseMap();
-            CreateMap<Services.Models.Person, Web.Models.Person>().ReverseMap();
+            CreateMap<Data.Models.UserEntity, Data.Models.UserModel>().ReverseMap();
+            CreateMap<Data.Models.UserModel, Services.Models.User>().ReverseMap();
+            CreateMap<Services.Models.User, Web.Models.User>().ReverseMap();
 
-            CreateMap<Services.Models.Person, ContactModel>()
-                .ForMember(from => from.ContactPrimary, mce => mce.MapFrom(to => to.PersonId))
+            CreateMap<Services.Models.User, ContactModel>()
+                .ForMember(from => from.ContactPrimary, mce => mce.MapFrom(to => to.UserId))
                 .ForMember(from => from.ContactSecondary, mce => mce.MapFrom(to => to.ContactId));
 
-            CreateMap<ContactModel, Services.Models.Person>()
-                .ForMember(from => from.PersonId, mce => mce.MapFrom(to => to.ContactPrimary))
+            CreateMap<ContactModel, Services.Models.User>()
+                .ForMember(from => from.UserId, mce => mce.MapFrom(to => to.ContactPrimary))
                 .ForMember(from => from.ContactId, mce => mce.MapFrom(to => to.ContactSecondary));
         }
     }
