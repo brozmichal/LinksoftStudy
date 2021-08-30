@@ -13,13 +13,15 @@
 
 <div>
     <h2>Import data.</h2>
-    <div>
-        <label for="file">
-            <b>New attachment</b>
-        </label>
-        <input name="file" id="attachmentsInput" type="file" accept=".txt" onchange="checkfiles()">
-    </div>
-    <div class="row" id="filesOverview">
+    <div name="fileWrapper">
+        <div>
+            <label for="file">
+                <b>New attachment</b>
+            </label>
+            <input name="file" id="attachmentsInput" type="file" accept=".txt" onchange="checkfiles()">
+        </div>
+        <div class="row" id="filesOverview">
+        </div>
     </div>
     <div>
         <input type="button" name="uploadNewFiles" value="Upload files" hidden onclick="uploadFiles()" />
@@ -37,7 +39,7 @@
             Total users: @Model.TotalUsers
         </p>
         <p>
-            Average per user: @Model.AverageFriendshipsPerUser}
+            Average per user: @Model.AverageFriendshipsPerUser
         </p>
     }
     else
@@ -71,7 +73,7 @@
 
     const getFiles = () => {
         fileList = [];
-        uploadButton.classList.add("disabled");
+        uploadButton.setAttribute("disabled", true);
         uploadButton.value = "Loading...";
 
         for (var i = 0; i < fileInput.files.length; i++) {
@@ -86,7 +88,7 @@
                     fileList.push({ "name": reader.fileName, "data": reader.result });
 
                     if (lastFile) {
-                        uploadButton.classList.remove("disabled");
+                        uploadButton.removeAttribute("disabled");
                         uploadButton.value = "Upload";
                     }
                 }
@@ -101,7 +103,8 @@
         const payload = {};
         payload.attachments = fileList;
 
-        uploadButton.classList.add("disabled");
+        document.getElementsByName("fileWrapper")[0].style = "display: none";
+        uploadButton.setAttribute("disabled", true);
         uploadButton.value = "Uploading...";
 
         fetch(`/Home/UploadFiles`,

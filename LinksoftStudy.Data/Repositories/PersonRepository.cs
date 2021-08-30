@@ -119,7 +119,7 @@ namespace LinksoftStudy.Data.Repositories
                     TotalFriendships = us.Select(c => c.Contacts).Count()
                 });
 
-            result.TotalUsers = users.Count();
+            result.TotalUsers = users.GroupBy(u => u.PersonId).Count();
 
             return result;
         }

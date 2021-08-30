@@ -32,7 +32,7 @@ namespace LinksoftStudy.Web.Processors
                 .Select(person => new Models.Person()
                 {
                     PersonId = person.PersonId
-                }).AsEnumerable();
+                });
         }
 
          public async Task<IUserStatistics> GetUsersStatistics()
@@ -45,7 +45,9 @@ namespace LinksoftStudy.Web.Processors
 
             var result = new UserStatistics()
             {
-                AverageFriendshipsPerUser = (int)resp.UserStatistics.Average(us => us.TotalFriends),
+                AverageFriendshipsPerUser = resp.UserStatistics.Count() > 0 
+                    ? (int)resp.UserStatistics?.Average(us => us.TotalFriends) 
+                    : 0,
                 TotalUsers = resp.TotalUsers
             };
 

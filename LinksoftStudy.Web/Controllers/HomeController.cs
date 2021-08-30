@@ -37,7 +37,7 @@ namespace LinksoftStudy.Web.Controllers
             //var filePath = @"c:\Temp\network-data.txt";
             //this.inputDataProcessor.Process(filePath);
 
-            var resp = this.personProcessor.GetUsersStatistics();
+            var resp = await this.personProcessor.GetUsersStatistics();
             if (resp == null)
             {
                 // log error - return error view
@@ -45,11 +45,11 @@ namespace LinksoftStudy.Web.Controllers
 
             var result = new UserStatistics()
             {
-                TotalUsers = resp?.Result?.TotalUsers ?? 0,
-                AverageFriendshipsPerUser = resp?.Result?.AverageFriendshipsPerUser ?? 0
+                TotalUsers = resp.TotalUsers,
+                AverageFriendshipsPerUser = resp.AverageFriendshipsPerUser
             };
 
-            return View(resp.Result);
+            return View(result);
         }
 
         [HttpPost]

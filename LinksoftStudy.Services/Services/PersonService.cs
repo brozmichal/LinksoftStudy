@@ -117,7 +117,7 @@ namespace LinksoftStudy.Services.Services
                        PersonId = user.User.PersonId
                     },
                     TotalFriends = user.TotalFriendships
-                }),
+                }).ToList(),
                 TotalUsers = resp.TotalUsers
             };
 
