@@ -25,6 +25,7 @@
     </div>
     <div>
         <input type="button" name="uploadNewFiles" value="Upload files" hidden onclick="uploadFiles()" />
+        <p name="uploadNotice" style="display: none;">Depending on amount of imported data, operation can take several minutes.</p>
     </div>
 </div>
 
@@ -105,6 +106,7 @@
 
         document.getElementsByName("fileWrapper")[0].style = "display: none";
         uploadButton.setAttribute("disabled", true);
+        document.getElementsByName("uploadNotice")[0].style = "";
         uploadButton.value = "Uploading...";
 
         fetch(`/Home/UploadFiles`,

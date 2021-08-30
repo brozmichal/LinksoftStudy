@@ -14,6 +14,56 @@ namespace LinksoftStudy.Data.Repositories
         {
         }
 
+        public async Task<IEnumerable<UserModel>> CreateUsers(IEnumerable<UserModel> users)
+        {
+            try
+            {
+                var processedUsers = new List<UserModel>();
+                UserEntity userEntity;
+                foreach (var user in users)
+                {
+                    userEntity = context.Users
+                    .Where(entity => entity.UserId == user.UserId)
+                    .Include(x => x.Contacts)
+                    .FirstOrDefault();
+
+                    if (userEntity != null)
+                    {
+                        continue;
+                    }
+
+                    userEntity = new UserEntity();
+                    this.CreateUser(userEntity, user);
+                    await context.SaveChangesAsync();
+
+                    processedUsers.Add(new UserModel()
+                    {
+                        UserId = userEntity.UserId,
+                        ContactId = user.ContactId,
+                        RequiresSecondRun = user.RequiresSecondRun
+                    });
+                }
+
+                foreach (var processedUser in processedUsers.Where(pu => pu.RequiresSecondRun))
+                {
+                    userEntity = context.Users
+                    .Where(entity => entity.UserId == processedUser.UserId)
+                    .Include(x => x.Contacts)
+                    .FirstOrDefault();
+
+                    this.TryAssignContact(userEntity, processedUser);
+                    await context.SaveChangesAsync();
+                }
+
+                return processedUsers;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Couldn't create entities: {ex.Message}");
+            }
+
+        }
+
         public async Task<UserModel> CreateOrUpdateUser(UserModel user)
         {
             try
@@ -147,7 +197,7 @@ namespace LinksoftStudy.Data.Repositories
                     .Where(entity => entity.UserId == user.ContactId)
                     .FirstOrDefault();
 
-            // contact person does not exist
+            // contact person does not exist - might be created in running sequence
             if (contact == null)
             {
                 user.RequiresSecondRun = true;
@@ -171,6 +221,8 @@ namespace LinksoftStudy.Data.Repositories
                     ContactId = contact.Id,
                     DateCreated = DateTime.UtcNow
                 });
+
+                user.RequiresSecondRun = false;
             }
             catch (Exception ex)
             {

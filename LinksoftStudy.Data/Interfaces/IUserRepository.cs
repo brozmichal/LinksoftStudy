@@ -14,5 +14,7 @@ namespace LinksoftStudy.Data.Interfaces
         Task<UserModel> CreateOrUpdateUser(UserModel person);
 
         Task<UserStatisticsModel> GetUsersStatistics();
+
+        Task<IEnumerable<UserModel>> CreateUsers(IEnumerable<UserModel> users);
     }
 }

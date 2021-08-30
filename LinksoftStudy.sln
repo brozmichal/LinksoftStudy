@@ -13,7 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinksoftStudy.Common", "Lin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4D99D625-7D34-4396-9FDE-A9B4283A8770}"
 	ProjectSection(SolutionItems) = preProject
-		Instructions.md = Instructions.md
+		Solution Items\Instructions.md = Solution Items\Instructions.md
+		Solution Items\network-data.txt = Solution Items\network-data.txt
 	EndProjectSection
 EndProject
 Global

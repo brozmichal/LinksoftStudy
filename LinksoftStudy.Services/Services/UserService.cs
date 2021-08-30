@@ -68,35 +68,17 @@ namespace LinksoftStudy.Services.Services
                 return null;
             }
 
-            var createdUsers = new List<UserModel>();
-            foreach (var user in req.Users)
+            var data = this.mapper.Map<IEnumerable<User>, IEnumerable<UserModel>>((IEnumerable<User>)req.Users);
+            var resp = await this.userRepository.CreateUsers(data);
+
+            if (resp == null)
             {
-                var userModel = this.mapper.Map<UserModel>(user);
-                var resp = await this.userRepository.CreateOrUpdateUser(userModel);
-
-                if (resp == null)
-                {
-                    // log failed 
-                }
-
-                createdUsers.Add(resp);
-            }
-
-            // second run for builk user creation to assign user connections
-            foreach (var user in createdUsers.Where(user => user.RequiresSecondRun))
-            {
-                var userModel = this.mapper.Map<UserModel>(user);
-                var resp = await this.userRepository.CreateOrUpdateUser(userModel);
-
-                if (resp == null)
-                {
-                    // log failed 
-                }
+                // log failed 
             }
 
             return new UserCreateBulkResp()
             {
-                Users = this.mapper.Map<IEnumerable<UserModel>, IEnumerable<User>>(createdUsers)
+                Users = this.mapper.Map<IEnumerable<UserModel>, IEnumerable<User>>(resp)
             };
         }
 
@@ -112,8 +94,9 @@ namespace LinksoftStudy.Services.Services
             {
                 UserStatistics = resp.Users.Select(user => new UserStatistic()
                 {
-                    User = new User() {
-                       UserId = user.User.UserId
+                    User = new User()
+                    {
+                        UserId = user.User.UserId
                     },
                     TotalFriends = user.TotalFriendships
                 }).ToList(),
